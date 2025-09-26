@@ -1,3 +1,5 @@
+/// <reference types="vitest" />
+
 import { defineConfig, loadEnv, type ServerOptions } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -7,7 +9,7 @@ import path from 'path'
 //     plugins: [react(), tailwindcss()]
 // })
 
-type TMode = 'development' | 'production'
+type TMode = 'development' | 'production' | 'test'
 
 interface AppEnv {
     VITE_ENV: TMode
@@ -45,6 +47,12 @@ export default defineConfig(({ mode }) => {
     }
     return {
         plugins: [react(), tailwindcss()],
+        test: {
+            globals: true,
+            environment: 'jsdom',
+            setupFiles: path.resolve(__dirname, 'src/setupTest.ts'),
+            include: ['src/**/*.{test,spec}.{ts,tsx}']
+        },
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, 'src'),
@@ -57,7 +65,10 @@ export default defineConfig(({ mode }) => {
         server: config,
         preview: config,
         build: {
-            minify: true
+            minify: true,
+            rollupOptions: {
+                external: [/.\*.(test|spec)\.(ts|tsx)$S/]
+            }
         }
     }
 })
