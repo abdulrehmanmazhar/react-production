@@ -1,5 +1,5 @@
 function App() {
-    return <p>This is s professional react project setup</p>
+    return <p className="bg-red-400">This is s professional react project setup</p>
 }
 
 export default App
